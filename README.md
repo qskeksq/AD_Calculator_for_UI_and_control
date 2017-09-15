@@ -1,14 +1,14 @@
 # AD_Calculator_for_UI
 
 ### 사칙연산 계산기
+- 정규식 사용의 이해
+- 컬렉션 ConcurrentModificationException, size() 변화
+- MVP 기초적 적용
+- try-catch로 연산 오류 처리
 
 ![myCal2](https://github.com/qskeksq/AD_Calculator_for_UI_and_control/blob/master/myCal2.png?raw=true)
 ![myCal1](https://github.com/qskeksq/AD_Calculator_for_UI_and_control/blob/master/myCal1.png?raw=true)
 
-  - 정규식 사용의 이해
-  - 컬렉션 ConcurrentModificationException, size() 변화
-  - MVP 기초적 적용
-  - try-catch로 연산 오류 처리
 
   ```java
   //계산
