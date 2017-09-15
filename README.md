@@ -1,25 +1,69 @@
 # AD_Calculator_for_UI
 
-### 다항식 연산이 가능한 안드로이드 계산기
+### 사칙연산 계산기
 
 ![myCal2](https://github.com/qskeksq/AD_Calculator_for_UI_and_control/blob/master/myCal2.png?raw=true)
 ![myCal1](https://github.com/qskeksq/AD_Calculator_for_UI_and_control/blob/master/myCal1.png?raw=true)
 
-### switch문을 통해 여러 버튼 제어하기의 좋은 예
-### 기능을 따로 메소드로 빼내어 함수 독립성과 가독성을 높이는 좋은 예
-### 정규식의 이해
-### 오버로딩의 좋은 예
-### 변수를 따로 빼내어 선언하는 좋은 예(한꺼번에 하는 것보다 before, after를 통해 가독성을 높이고, 변수를 명확하게 알 수 있다)
-### 동적 객체 배열 심화 이해의 좋은 예
-1. 동적 객체 배열의 size를 for문 조건식으로 사용할 때 조심하기
-2. 3개의 항을 한개로 바꾸기
-3. 현재 항을 앞 항으로 당기기
-4. 항을 삭제하면 어떤 일이 벌어지는지, 어떻게 삭제해야 하는지 이해
-5. set을 통해 항의 값을 바꿔주기
-### equals와 ==의 섬세한 사용
-### Log를 통해 오류 찾아내기
-### M과 P 분리의 이해
-1. 초기에 만들었을 때 M과 P가 섞여 코딩이 복잡해졌음을 알 수 있다.
-2. 이후 입력하는 것은 입력하는 대로, 입력값을 받아와 계산하는 곳은 계산하는 대로 분리해서 하면 할 일이 명확해지고 가독성이 좋아진다.
-3. 단항식 코드와 다항식 코드의 비교
-### try-catch문 활용의 좋은 예
+  - 정규식 사용의 이해
+  - 컬렉션 ConcurrentModificationException, size() 변화
+  - MVP 기초적 적용
+  - try-catch로 연산 오류 처리
+
+  ```java
+  //계산
+public String calculate(String preview){
+
+      //정규식을 통해 연산자와 숫자를 분리해낸다.
+      String[] split = preview.split("(?<=[*/+-])|(?=[*/+-])");
+
+      //배열에서 수를 빼낼 때 유연하게 사용하기 위해 컬렉션을 이용한다.
+      ArrayList<String> list = new ArrayList<>();
+      for( String str : split){
+          list.add(str);
+      }
+
+      //가장 먼저 곱셈과 나눗셈을 계산한다.
+      for(int i=0; i<list.size(); i++){ //여기서 int size = list.size()로 하면 배열의 크기보다 큰 수가 들어가 문제가 생긴다.
+          //굳이 하나하나 다 구할 필요 없이, 일단 *, /이 나타날 경우 앞 뒤 계산만 해서 넣어주면 된다.
+          String temp = list.get(i).toString(); //list.get(i) == "+"로 하지 않고, equals를 쓰는 게 좋다!!!
+          if(temp.equals("*") || temp.equals("/")) {
+              String before = list.get(i-1); //연산자 앞 항
+              String after = list.get(i+1); //연산다 뒤 항
+              double current = 0; //계산 값
+              if(temp.equals("*")){ //곱셈일 경우
+                  current = Double.parseDouble(before)*Double.parseDouble(after);
+              } else if(temp.equals("/")){ //나눗셈일 경우
+                  current = Double.parseDouble(before)/Double.parseDouble(after);
+              }
+
+              list.set(i, current+""); //세 항이 없어지고 한 항이 생기는데, 세 항 중 첫 항으로 들어간다.
+              list.remove(i+1); //먼저 세번째 항을 없애고
+              list.remove(i-1); //나중에 첫 항을 없애야 엉뚱한 값을 제거하지 않는다.
+              i--;
+          }
+      }
+
+      //남은 항은 이제 덧셈과 뺄셈
+      for(int i=0; i<list.size(); i++){
+          String temp = list.get(i).toString(); //list.get(i) == "+"는 왜 안 되는가?
+          if(temp.equals("+") || temp.equals("-")) {
+              String before = list.get(i-1); //연산자 앞 항
+              Log.w("MainActivity2", before);
+              String after = list.get(i+1); //연산다 뒤 항
+              Log.w("MainActivity2", after);
+              double current = 0; //계산 값
+              if(temp.equals("+")){ //덧셈일 경우
+                  current = Double.parseDouble(before)+Double.parseDouble(after);
+              } else if(temp.equals("-")){ //뺄셈일 경우
+                  current = Double.parseDouble(before)-Double.parseDouble(after);
+              }
+              list.set(i, current+"");
+              list.remove(i+1);
+              list.remove(i-1);
+              i--;
+          }
+      }
+      return list.get(0);
+}
+  ```
